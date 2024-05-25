@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
             create: (context) => locator<HomeBloc>(),
           )
         ],
-        child: const MainWrapper(),
+        child: MainWrapper(),
       ),
     );
   }
