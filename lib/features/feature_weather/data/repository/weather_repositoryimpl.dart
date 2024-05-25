@@ -6,13 +6,13 @@ import 'package:advanced_besenior/features/feature_weather/domain/repository/wea
 import 'package:dio/dio.dart';
 
 class WeatherRepositoryimpl extends WeatherRepository {
-  APiProvider aPiProvider;
-  WeatherRepositoryimpl(this.aPiProvider);
+  APiProvider apiProvider;
+  WeatherRepositoryimpl(this.apiProvider);
   @override
   Future<DataState<CurrentCityEntity>> fetchCurrentWeatherData(
       String cityName) async {
     try {
-      Response response = await aPiProvider.callCurrentWeather(cityName);
+      Response response = await apiProvider.callCurrentWeather(cityName);
 
       if (response.statusCode == 200) {
         CurrentCityEntity currentCityEntity =

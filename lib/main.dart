@@ -1,10 +1,13 @@
 import 'package:advanced_besenior/core/widgets/mian_wrapper.dart';
-import 'package:advanced_besenior/features/feature_weather/data/dataSource/remote/api_provider.dart';
-import 'package:advanced_besenior/features/feature_weather/data/repository/weather_repositoryimpl.dart';
-import 'package:advanced_besenior/features/feature_weather/domain/use_cases/get_current_weather_useCase.dart';
+import 'package:advanced_besenior/features/feature_weather/persentation/bloc/home_bloc.dart';
+import 'package:advanced_besenior/locator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-void main() {
+void main() async {
+  //init locator
+  await setup();
+
   runApp(const MyApp());
 }
 
@@ -13,13 +16,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    GetCurrentWeatherUsecase getCurrentWeatherUsecase =
-        GetCurrentWeatherUsecase(WeatherRepositoryimpl(APiProvider()));
-
-    getCurrentWeatherUsecase('tehran');
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: MainWrapper(),
+      home: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => locator<HomeBloc>(),
+          )
+        ],
+        child: const MainWrapper(),
+      ),
     );
   }
 }
