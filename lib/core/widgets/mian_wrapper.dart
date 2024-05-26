@@ -1,6 +1,6 @@
 import 'package:advanced_besenior/core/widgets/app_bacground.dart';
 import 'package:advanced_besenior/core/widgets/bottom_nav.dart';
-import 'package:advanced_besenior/features/feature_bookmark/persentation/screens/bookmark_screen.dart';
+import 'package:advanced_besenior/features/fearture_bookmark/persentation/screens/bookmark_screen.dart';
 import 'package:advanced_besenior/features/feature_weather/persentation/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 
