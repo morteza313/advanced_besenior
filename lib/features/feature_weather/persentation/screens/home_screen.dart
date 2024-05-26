@@ -4,14 +4,17 @@ import 'package:advanced_besenior/core/widgets/dot_loading_widget.dart';
 import 'package:advanced_besenior/features/feature_weather/data/models/forcastDaysModel.dart';
 import 'package:advanced_besenior/features/feature_weather/domain/entities/current_city_entities.dart';
 import 'package:advanced_besenior/features/feature_weather/domain/entities/forcast_days_entities.dart';
+import 'package:advanced_besenior/features/feature_weather/domain/use_cases/get_suggestion_usecase.dart';
 import 'package:advanced_besenior/features/feature_weather/persentation/bloc/cw_status.dart';
 import 'package:advanced_besenior/features/feature_weather/persentation/bloc/fw_status.dart';
 import 'package:advanced_besenior/features/feature_weather/persentation/bloc/home_bloc.dart';
 import 'package:advanced_besenior/features/feature_weather/persentation/bloc/home_event.dart';
 import 'package:advanced_besenior/features/feature_weather/persentation/bloc/home_state.dart';
 import 'package:advanced_besenior/features/feature_weather/persentation/widgets/days_weather_view.dart';
+import 'package:advanced_besenior/locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -22,6 +25,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final TextEditingController textEditingController = TextEditingController();
+  GetSuggestionUsecase getSuggestionUsecase = GetSuggestionUsecase(locator());
   String cityName = "Tehran";
   PageController _pageController = PageController(initialPage: 0);
   @override
@@ -38,6 +43,11 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          SizedBox(
+            height: height * 0.02,
+          ),
+
+          //main ui
           BlocBuilder<HomeBloc, HomeState>(
             buildWhen: (previous, current) {
               //rebuild just when cw status changed

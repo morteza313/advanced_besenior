@@ -3,8 +3,10 @@ import 'package:advanced_besenior/core/resources/data_state.dart';
 import 'package:advanced_besenior/features/feature_weather/data/dataSource/remote/api_provider.dart';
 import 'package:advanced_besenior/features/feature_weather/data/models/current_city_model.dart';
 import 'package:advanced_besenior/features/feature_weather/data/models/forcastDaysModel.dart';
+import 'package:advanced_besenior/features/feature_weather/data/models/suggest_city_model.dart';
 import 'package:advanced_besenior/features/feature_weather/domain/entities/current_city_entities.dart';
 import 'package:advanced_besenior/features/feature_weather/domain/entities/forcast_days_entities.dart';
+import 'package:advanced_besenior/features/feature_weather/domain/entities/suggest_city_entity.dart';
 import 'package:advanced_besenior/features/feature_weather/domain/repository/weather_repository.dart';
 import 'package:dio/dio.dart';
 
@@ -45,5 +47,15 @@ class WeatherRepositoryimpl extends WeatherRepository {
     } catch (e) {
       return const DataFailed('please check your connection ...');
     }
+  }
+
+  @override
+  Future<List<Data>> fetchSuggestData(cityName) async {
+    Response response = await apiProvider.sendRequestCitySuggestion(cityName);
+
+    SuggestCityEntity suggestCityEntity =
+        SuggestCityModel.fromJson(response.data);
+
+    return suggestCityEntity.data!;
   }
 }
