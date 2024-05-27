@@ -1,3 +1,4 @@
+import 'package:advanced_besenior/features/fearture_bookmark/data/dataSource/local/database.dart';
 import 'package:advanced_besenior/features/feature_weather/data/dataSource/remote/api_provider.dart';
 import 'package:advanced_besenior/features/feature_weather/data/repository/weather_repositoryimpl.dart';
 import 'package:advanced_besenior/features/feature_weather/domain/repository/weather_repository.dart';
@@ -11,6 +12,9 @@ GetIt locator = GetIt.instance;
 setup() async {
   //components
   locator.registerSingleton<APiProvider>(APiProvider());
+  final database =
+      await $FloorAppDatabase.databaseBuilder('app_database.db').build();
+  locator.registerSingleton<AppDatabase>(database);
 
   //repositories
   locator
