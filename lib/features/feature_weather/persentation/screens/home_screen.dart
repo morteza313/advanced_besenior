@@ -47,6 +47,50 @@ class _HomeScreenState extends State<HomeScreen> {
             height: height * 0.02,
           ),
 
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: width * 0.03),
+            child: TypeAheadField(
+              builder: (context, controller, focusNode) {
+                return TextField(
+                  focusNode: focusNode,
+                  autofocus: true,
+                  controller: controller,
+                  style: const TextStyle(fontSize: 20, color: Colors.white),
+                  decoration: const InputDecoration(
+                    contentPadding: EdgeInsets.fromLTRB(28, 0, 0, 8),
+                    hintText: "Enter a City ...",
+                    hintStyle: TextStyle(color: Colors.white),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
+                  ),
+                  onSubmitted: (value) {
+                    textEditingController.text = value;
+                    BlocProvider.of<HomeBloc>(context)
+                        .add(LoadCwEvent(cityName: value));
+                  },
+                );
+              },
+              suggestionsCallback: (search) {
+                return getSuggestionUsecase(search);
+              },
+              itemBuilder: (context, value) {
+                return ListTile(
+                  leading: const Icon(Icons.location_on),
+                  title: Text(value.name!),
+                  subtitle: Text("${value.region!} , ${value.country}"),
+                );
+              },
+              onSelected: (value) {
+                textEditingController.text = value.name!;
+                BlocProvider.of<HomeBloc>(context)
+                    .add(LoadCwEvent(cityName: value.name!));
+              },
+            ),
+          ),
           //main ui
           BlocBuilder<HomeBloc, HomeState>(
             buildWhen: (previous, current) {
