@@ -130,8 +130,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   if (state.cwStatus is CwCompleated) {
                     final CwCompleated cwComplete =
                         state.cwStatus as CwCompleated;
-                    BlocProvider.of<BookmarkBloc>(context).add(
+                    context.read<BookmarkBloc>().add(
                         GetCityByNameEvent(cwComplete.currentCityEntity.name!));
+
                     return BookMarkIcon(
                         name: cwComplete.currentCityEntity.name!);
                   }

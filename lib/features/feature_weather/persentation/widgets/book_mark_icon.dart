@@ -91,7 +91,7 @@ class BookMarkIcon extends StatelessWidget {
                 return IconButton(
                   onPressed: () {
                     /// call event for save Current City in Database
-                    BlocProvider.of<BookmarkBloc>(context)
+                    BlocProvider.of<BookmarkBloc>(context, listen: false)
                         .add(SaveCwEvent(name));
                   },
                   icon: Icon(
