@@ -14,10 +14,15 @@ class MainWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Widget> pageViewWidget = [
       BlocProvider(
-        create: (context) => BookmarkBloc(locator(), locator()),
+        create: (context) => locator<BookmarkBloc>(),
         child: const HomeScreen(),
       ),
-      const BookmarkScreen(),
+      BlocProvider(
+        create: (context) => locator<BookmarkBloc>(),
+        child: BookmarkScreen(
+          pageController: pageController,
+        ),
+      ),
     ];
     return Scaffold(
       extendBody: true,

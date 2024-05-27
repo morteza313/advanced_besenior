@@ -2,9 +2,11 @@ import 'package:advanced_besenior/features/fearture_bookmark/data/dataSource/loc
 import 'package:advanced_besenior/features/fearture_bookmark/data/dataSource/local/database.dart';
 import 'package:advanced_besenior/features/fearture_bookmark/data/repository/city_repositoryImpl.dart';
 import 'package:advanced_besenior/features/fearture_bookmark/domain/repository/city_repository.dart';
+import 'package:advanced_besenior/features/fearture_bookmark/domain/use_cases/delete_city_usecase.dart';
 import 'package:advanced_besenior/features/fearture_bookmark/domain/use_cases/get_all_city_usecase.dart';
 import 'package:advanced_besenior/features/fearture_bookmark/domain/use_cases/get_city_usecase.dart';
 import 'package:advanced_besenior/features/fearture_bookmark/domain/use_cases/save_city_usecase.dart';
+import 'package:advanced_besenior/features/fearture_bookmark/persentation/bloc/bookmark_bloc.dart';
 import 'package:advanced_besenior/features/feature_weather/data/dataSource/remote/api_provider.dart';
 import 'package:advanced_besenior/features/feature_weather/data/repository/weather_repositoryimpl.dart';
 import 'package:advanced_besenior/features/feature_weather/domain/repository/weather_repository.dart';
@@ -31,12 +33,21 @@ setup() async {
   //useCases
   locator.registerSingleton<GetCurrentWeatherUsecase>(
       GetCurrentWeatherUsecase(locator()));
-
   locator.registerSingleton<GetForcastWeatherUsecase>(
       GetForcastWeatherUsecase(locator()));
   locator.registerSingleton<GetCityUseCase>(GetCityUseCase(locator()));
   locator.registerSingleton<SaveCityUseCase>(SaveCityUseCase(locator()));
+  locator.registerSingleton<GetAllCityUseCase>(GetAllCityUseCase(locator()));
+  locator.registerSingleton<DeleteCityUseCase>(DeleteCityUseCase(locator()));
 
   //bloc
   locator.registerSingleton<HomeBloc>(HomeBloc(locator(), locator()));
+  locator.registerSingleton<BookmarkBloc>(
+    BookmarkBloc(
+      locator(),
+      locator(),
+      locator(),
+      locator(),
+    ),
+  );
 }
