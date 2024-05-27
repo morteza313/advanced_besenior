@@ -2,6 +2,7 @@ import 'package:advanced_besenior/core/params/forcast_params.dart';
 import 'package:advanced_besenior/core/utils/data_converter.dart';
 import 'package:advanced_besenior/core/widgets/app_bacground.dart';
 import 'package:advanced_besenior/core/widgets/dot_loading_widget.dart';
+import 'package:advanced_besenior/features/fearture_bookmark/persentation/bloc/bookmark_bloc.dart';
 import 'package:advanced_besenior/features/feature_weather/data/models/forcastDaysModel.dart';
 import 'package:advanced_besenior/features/feature_weather/domain/entities/current_city_entities.dart';
 import 'package:advanced_besenior/features/feature_weather/domain/entities/forcast_days_entities.dart';
@@ -11,6 +12,7 @@ import 'package:advanced_besenior/features/feature_weather/persentation/bloc/fw_
 import 'package:advanced_besenior/features/feature_weather/persentation/bloc/home_bloc.dart';
 import 'package:advanced_besenior/features/feature_weather/persentation/bloc/home_event.dart';
 import 'package:advanced_besenior/features/feature_weather/persentation/bloc/home_state.dart';
+import 'package:advanced_besenior/features/feature_weather/persentation/widgets/book_mark_icon.dart';
 import 'package:advanced_besenior/features/feature_weather/persentation/widgets/days_weather_view.dart';
 import 'package:advanced_besenior/locator.dart';
 import 'package:flutter/material.dart';
@@ -50,48 +52,96 @@ class _HomeScreenState extends State<HomeScreen> {
 
           Padding(
             padding: EdgeInsets.symmetric(horizontal: width * 0.03),
-            child: TypeAheadField(
-              builder: (context, controller, focusNode) {
-                return TextField(
-                  focusNode: focusNode,
-                  autofocus: false,
-                  controller: controller,
-                  style: const TextStyle(fontSize: 20, color: Colors.white),
-                  decoration: const InputDecoration(
-                    contentPadding: EdgeInsets.fromLTRB(28, 0, 0, 8),
-                    hintText: "Enter a City ...",
-                    hintStyle: TextStyle(color: Colors.white),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
-                    ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TypeAheadField(
+                    builder: (context, controller, focusNode) {
+                      return TextField(
+                        focusNode: focusNode,
+                        autofocus: false,
+                        controller: controller,
+                        style:
+                            const TextStyle(fontSize: 20, color: Colors.white),
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.fromLTRB(28, 0, 0, 8),
+                          hintText: "Enter a City ...",
+                          hintStyle: TextStyle(color: Colors.white),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                          ),
+                        ),
+                        onSubmitted: (value) {
+                          textEditingController.text = value;
+                          BlocProvider.of<HomeBloc>(context)
+                              .add(LoadCwEvent(cityName: value));
+                        },
+                      );
+                    },
+                    suggestionsCallback: (search) {
+                      return getSuggestionUsecase(search);
+                    },
+                    itemBuilder: (context, value) {
+                      return ListTile(
+                        leading: const Icon(Icons.location_on),
+                        title: Text(value.name!),
+                        subtitle: Text("${value.region!} , ${value.country}"),
+                      );
+                    },
+                    onSelected: (value) {
+                      textEditingController.text = value.name!;
+                      BlocProvider.of<HomeBloc>(context)
+                          .add(LoadCwEvent(cityName: value.name!));
+                    },
                   ),
-                  onSubmitted: (value) {
-                    textEditingController.text = value;
-                    BlocProvider.of<HomeBloc>(context)
-                        .add(LoadCwEvent(cityName: value));
-                  },
-                );
-              },
-              suggestionsCallback: (search) {
-                return getSuggestionUsecase(search);
-              },
-              itemBuilder: (context, value) {
-                return ListTile(
-                  leading: const Icon(Icons.location_on),
-                  title: Text(value.name!),
-                  subtitle: Text("${value.region!} , ${value.country}"),
-                );
-              },
-              onSelected: (value) {
-                textEditingController.text = value.name!;
-                BlocProvider.of<HomeBloc>(context)
-                    .add(LoadCwEvent(cityName: value.name!));
-              },
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                BlocBuilder<HomeBloc, HomeState>(
+                    buildWhen: (previous, current) {
+                  if (previous.cwStatus == current.cwStatus) {
+                    return false;
+                  }
+                  return true;
+                }, builder: (context, state) {
+                  /// show Loading State for Cw
+                  if (state.cwStatus is CwLoading) {
+                    return const CircularProgressIndicator();
+                  }
+
+                  /// show Error State for Cw
+                  if (state.cwStatus is CWError) {
+                    return IconButton(
+                      onPressed: () {
+                        // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        //   content: Text("please load a city!"),
+                        //   behavior: SnackBarBehavior.floating, // Add this line
+                        // ));
+                      },
+                      icon: const Icon(Icons.error,
+                          color: Colors.white, size: 35),
+                    );
+                  }
+
+                  if (state.cwStatus is CwCompleated) {
+                    final CwCompleated cwComplete =
+                        state.cwStatus as CwCompleated;
+                    BlocProvider.of<BookmarkBloc>(context).add(
+                        GetCityByNameEvent(cwComplete.currentCityEntity.name!));
+                    return BookMarkIcon(
+                        name: cwComplete.currentCityEntity.name!);
+                  }
+
+                  return Container();
+                }),
+              ],
             ),
           ),
+
           //main ui
           BlocBuilder<HomeBloc, HomeState>(
             buildWhen: (previous, current) {
@@ -281,12 +331,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Divider(),
                       ),
                       Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10),
+                        padding: const EdgeInsets.symmetric(vertical: 10),
                         child: SizedBox(
                           width: width,
                           height: 100,
                           child: Padding(
-                            padding: EdgeInsets.only(left: 19),
+                            padding: const EdgeInsets.only(left: 19),
                             child: Center(
                               child: BlocBuilder<HomeBloc, HomeState>(
                                 builder: (context, state) {
@@ -338,7 +388,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Divider(),
                       ),
                       Padding(
-                        padding: EdgeInsets.symmetric(vertical: 30),
+                        padding: const EdgeInsets.symmetric(vertical: 30),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
