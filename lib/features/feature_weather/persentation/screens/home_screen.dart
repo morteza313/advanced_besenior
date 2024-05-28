@@ -27,7 +27,8 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen>
+    with AutomaticKeepAliveClientMixin {
   final TextEditingController textEditingController = TextEditingController();
   GetSuggestionUsecase getSuggestionUsecase = GetSuggestionUsecase(locator());
   String cityName = "Tehran";
@@ -533,4 +534,9 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
+// with methode
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }

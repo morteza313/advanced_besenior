@@ -22,7 +22,6 @@ class BookmarkScreen extends StatefulWidget {
 class _BookmarkScreenState extends State<BookmarkScreen> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     BlocProvider.of<BookmarkBloc>(context).add(GetAllCityEvent());
   }
@@ -46,7 +45,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
           );
         }
 
-        //show errror for AllCityStatus
+        //show error for AllCityStatus
         if (state.getAllCityStatus is GetAllCitiesError) {
           //casting for getting error
           GetAllCitiesError getAllCitiesError =
@@ -114,9 +113,11 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                                       width: width,
                                       height: 60.0,
                                       decoration: BoxDecoration(
-                                          borderRadius: const BorderRadius.all(
-                                              Radius.circular(20)),
-                                          color: Colors.grey.withOpacity(0.1)),
+                                        borderRadius: const BorderRadius.all(
+                                          Radius.circular(20),
+                                        ),
+                                        color: Colors.grey.withOpacity(0.1),
+                                      ),
                                       child: Padding(
                                         padding:
                                             const EdgeInsets.only(left: 20.0),
@@ -132,19 +133,20 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                                                   fontSize: 20),
                                             ),
                                             IconButton(
-                                                onPressed: () {
-                                                  BlocProvider.of<BookmarkBloc>(
-                                                          context)
-                                                      .add(DeleteCityEvent(
-                                                          city.name));
-                                                  BlocProvider.of<BookmarkBloc>(
-                                                          context)
-                                                      .add(GetAllCityEvent());
-                                                },
-                                                icon: const Icon(
-                                                  Icons.delete,
-                                                  color: Colors.redAccent,
-                                                )),
+                                              onPressed: () {
+                                                BlocProvider.of<BookmarkBloc>(
+                                                        context)
+                                                    .add(DeleteCityEvent(
+                                                        city.name));
+                                                BlocProvider.of<BookmarkBloc>(
+                                                        context)
+                                                    .add(GetAllCityEvent());
+                                              },
+                                              icon: const Icon(
+                                                Icons.delete,
+                                                color: Colors.redAccent,
+                                              ),
+                                            ),
                                           ],
                                         ),
                                       ),

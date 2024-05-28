@@ -13,12 +13,12 @@ class MainWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Widget> pageViewWidget = [
-      BlocProvider(
-        create: (context) => locator<BookmarkBloc>(),
-        child: const HomeScreen(),
+      BlocProvider.value(
+        value: locator<BookmarkBloc>(),
+        child: HomeScreen(),
       ),
-      BlocProvider(
-        create: (context) => locator<BookmarkBloc>(),
+      BlocProvider.value(
+        value: locator<BookmarkBloc>(),
         child: BookmarkScreen(
           pageController: pageController,
         ),
@@ -32,8 +32,9 @@ class MainWrapper extends StatelessWidget {
       body: Container(
         height: MediaQuery.of(context).size.height,
         decoration: BoxDecoration(
-            image: DecorationImage(
-                image: AppBackground.getBackGroundImage(), fit: BoxFit.cover)),
+          image: DecorationImage(
+              image: AppBackground.getBackGroundImage(), fit: BoxFit.cover),
+        ),
         child: PageView(
           controller: pageController,
           children: pageViewWidget,
